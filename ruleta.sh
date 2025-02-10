@@ -19,7 +19,10 @@ trap ctrl_c INT
 ##DECLARACIONES DE FUNCIONES 
 panelDeAyuda()
 {
-  echo -e "${yellowColour}m)h)${endColour}${blueColour}[~]${endColour}${grayColour}Se coloca el dinero y tecnica deseadas${endColour}"
+  echo -e "\n${yellowColour}m)h)${endColour}${blueColour}[~]${endColour}${grayColour}Se coloca el dinero y tecnica deseadas...${endColour}"
+  
+echo -e "\n-m):Se coloca la canntidad de dinero que se quiere apostar\n 
+-t):se coloca la tecnica a jugar; martingala/inversa\n"
 }
 
 martingala()
@@ -29,21 +32,40 @@ martingala()
   echo -n "¿A que numero deseas apostar continuamente (par/inpar)? -- " && read par_impar
   
   echo -e "Vamos a jugar con una cantidad de:$initial_bet a numero:$par_impar"
-
+  back_bet=$initial_bet
  while true; do
+   money=$(($money-$initial_bet))
+   echo -e "\n Acabas de apóstar $initial_bet$ y tienes $money"
    random_nume="$(($RANDOM % 37))"
-   echo -e "Ha salido el numero: $random_nume"
-   sleep 4 
-   if [[ $(($random_nume % 2)) -eq 0 ]]; then
-  if [[ $random_nume -eq 0 ]]; then
-    echo -e "Ha salido el cero por tanto perdemos"
-    else
-      echo "su numero es par"
-  fi
-else 
-  echo -e "Su numero es impar"
- fi
-done 
+     echo -e "Ha salido el numero: $random_nume" 
+      
+    if [[ ! "$money" -le 0 ]]; then
+     
+     if [[ "$par_impar" == "par" ]]; then
+          
+           if [[ $(($random_nume % 2)) -eq 0 ]]; then
+          if [[ $random_nume -eq 0 ]]; then
+            echo -e "Ha salido el cero por tanto perdemos"
+            initial_bet=$(($initial_bet*2))
+          else
+              echo "su numero es par, !ganas¡"
+              reward=$(($initial_bet*2))
+              echo -e "Ganas un total de $reward $"
+              initial_bet=$back_bet
+              money=$(($money+$reward))
+              echo -e "Su dinero ahora es de :$money"
+          fi
+        else 
+          echo -e "Su numero es impar,!pierdes¡"
+          initial_bet=$(($initial_bet*2))
+           fi
+         sleep 0.4 
+       fi
+      else 
+          echo -e "Te quedaste sin pinches dineros"
+          break  
+    fi 
+     done 
 }
 
 #DECLARACION DE ARGUMENTOS
