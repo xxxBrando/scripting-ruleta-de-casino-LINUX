@@ -27,17 +27,19 @@ echo -e "\n-m):Se coloca la canntidad de dinero que se quiere apostar\n
 
 martingala()
 {
-  echo -e "Dinero actual:$money$"
+  echo -e "\nDinero actual:$money$"
   echo -n "¿Cuanto dinero tienes pensado apostar? --" && read initial_bet
   echo -n "¿A que numero deseas apostar continuamente (par/inpar)? -- " && read par_impar
   
   echo -e "Vamos a jugar con una cantidad de:$initial_bet a numero:$par_impar"
   back_bet=$initial_bet
- while true; do
+  play_counter=1
+  jugadas_malas=""
+  while true; do
    money=$(($money-$initial_bet))
-   echo -e "\n Acabas de apóstar $initial_bet$ y tienes $money"
+  # echo -e "\n Acabas de apóstar $initial_bet$ y tienes $money"
    random_nume="$(($RANDOM % 37))"
-     echo -e "Ha salido el numero: $random_nume" 
+     #echo -e "Ha salido el numero: $random_nume" 
       
     if [[ ! "$money" -le 0 ]]; then
      
@@ -45,26 +47,56 @@ martingala()
           
            if [[ $(($random_nume % 2)) -eq 0 ]]; then
           if [[ $random_nume -eq 0 ]]; then
-            echo -e "Ha salido el cero por tanto perdemos"
+           # echo -e "Ha salido el cero por tanto perdemos"
             initial_bet=$(($initial_bet*2))
+            jugadas_malas+="$random_nume "
+
           else
-              echo "su numero es par, !ganas¡"
+             # echo "su numero es par, !ganas¡"
               reward=$(($initial_bet*2))
-              echo -e "Ganas un total de $reward $"
+              #echo -e "Ganas un total de $reward $"
               initial_bet=$back_bet
               money=$(($money+$reward))
-              echo -e "Su dinero ahora es de :$money"
+              #echo -e "Su dinero ahora es de :$money"
+              jugadas_malas=""
           fi
         else 
-          echo -e "Su numero es impar,!pierdes¡"
-          initial_bet=$(($initial_bet*2))
+          #echo -e "Su numero es impar,!pierdes¡"
+           initial_bet=$(($initial_bet*2))
+           jugadas_malas+="$random_nume "
            fi
-         sleep 0.4 
+         
        fi
       else 
-          echo -e "Te quedaste sin pinches dineros"
+          echo -e "\n\nTe quedaste sin pinches dineros"
+          echo -e "han avido un total de: $play_counter jagadas" 
+          echo -e "Las jugadas malas fueron:\n$jugadas_malas\n"
           break  
+     else
+     ##JUGADA IMPAR######
+         if [[ $(($random_nume % 2)) -eq 0 ]]; then
+          if [[ $random_nume -eq 0 ]]; then
+           # echo -e "Ha salido el cero por tanto perdemos"
+            initial_bet=$(($initial_bet*2))
+            jugadas_malas+="$random_nume "
+
+          else
+             # echo "su numero es par, !ganas¡"
+              reward=$(($initial_bet*2))
+              #echo -e "Ganas un total de $reward $"
+              initial_bet=$back_bet
+              money=$(($money+$reward))
+              #echo -e "Su dinero ahora es de :$money"
+              jugadas_malas=""
+          fi
+        else 
+          #echo -e "Su numero es impar,!pierdes¡"
+           initial_bet=$(($initial_bet*2))
+           jugadas_malas+="$random_nume "
+           fi
+
     fi 
+    let play_counter+=1
      done 
 }
 
